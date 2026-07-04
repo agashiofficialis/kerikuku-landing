@@ -50,6 +50,10 @@ document.querySelectorAll("[data-link]").forEach((a) => {
 });
 
 /* ---------- 2. ДОНАТ-ЦЕЛЬ ---------- */
+/* Сумма "собрано" приходит с live-счётчика (Ko-fi webhook → Cloudflare Worker).
+   Если Worker недоступен — используется значение из donation-goal.json. */
+const GOAL_API = "https://kerikuku-goal.rougevolpe.workers.dev/goal";
+
 const fmt = (n, currency) =>
   new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -59,12 +63,20 @@ const fmt = (n, currency) =>
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-fetch("donation-goal.json", { cache: "no-store" })
-  .then((r) => {
+Promise.all([
+  fetch("donation-goal.json", { cache: "no-store" }).then((r) => {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return r.json();
-  })
-  .then((goal) => {
+  }),
+  fetch(GOAL_API)
+    .then((r) => (r.ok ? r.json() : null))
+    .catch(() => null),
+])
+  .then(([goal, live]) => {
+    if (live && Number.isFinite(live.collected)) {
+      goal.collected = live.collected;
+      if (live.updated) goal.updated = live.updated;
+    }
     const pct = Math.max(0, Math.min(100, (goal.collected / goal.goal) * 100));
     const collected = fmt(goal.collected, goal.currency);
     const target = fmt(goal.goal, goal.currency);
