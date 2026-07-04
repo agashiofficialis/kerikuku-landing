@@ -8,6 +8,7 @@
 /* ---------- 1. ССЫЛКИ (заменить плейсхолдеры на реальные URL) ---------- */
 const LINKS = {
   kofi:      "[ВСТАВИТЬ ССЫЛКУ]", // например https://ko-fi.com/имяпрофиля
+  bmc:       "[ВСТАВИТЬ ССЫЛКУ]", // например https://buymeacoffee.com/имяпрофиля
   instagram: "https://www.instagram.com/kerikuku",
   tiktok:    "[ВСТАВИТЬ ССЫЛКУ]",
   telegram:  "[ВСТАВИТЬ ССЫЛКУ]",

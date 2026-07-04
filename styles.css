@@ -163,6 +163,18 @@ h1.display {
 .sticker-btn:hover { transform: rotate(0deg) translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
 .sticker-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--ink); }
 .cta-merch { background: var(--brick); }
+.cta-bmc { background: #FFDD00; color: var(--ink); transform: rotate(1.5deg); }
+.cta-bmc:hover { transform: rotate(0deg) translate(-2px, -2px); }
+
+.donate-btns { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; }
+
+.sticker-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  vertical-align: -4px;
+  margin-right: var(--s2);
+}
 
 /* ===== GOAL ===== */
 .goal { background: var(--sage); }
