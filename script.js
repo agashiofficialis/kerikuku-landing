@@ -18,6 +18,10 @@ const LINKS = {
 const UTM_SOURCE = "landing";
 const UTM_MEDIUM = "cta";
 
+// Соцплатформы не терпят чужих query-параметров (Threads отвечает 429),
+// и UTM там всё равно бесполезны — метим только донаты и магазин.
+const NO_UTM = new Set(["instagram", "threads", "x"]);
+
 function isRealUrl(value) {
   return /^https?:\/\//i.test(value);
 }
@@ -39,7 +43,7 @@ document.querySelectorAll("[data-link]").forEach((a) => {
   const raw = LINKS[key];
   if (isRealUrl(raw)) {
     const campaign = a.dataset.utmCampaign || key;
-    a.href = withUtm(raw, campaign);
+    a.href = NO_UTM.has(key) ? raw : withUtm(raw, campaign);
     a.target = "_blank";
     a.rel = "noopener noreferrer";
   } else {
