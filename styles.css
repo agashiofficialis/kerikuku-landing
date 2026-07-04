@@ -1,0 +1,353 @@
+/* ============================================================
+   Karina landing — comic panel system
+   Tokens: see DESIGN_TOKENS.md
+   ============================================================ */
+
+:root {
+  --paper:  #F1ECDF;
+  --ink:    #25222C;
+  --sage:   #A9AE94;
+  --neon:   #C92BE0;
+  --violet: #5A2E8C;
+  --brick:  #C44A3E;
+
+  --s1: 4px;  --s2: 8px;  --s3: 16px; --s4: 24px;
+  --s5: 40px; --s6: 64px; --s7: 96px;
+
+  --r-panel: 14px;
+  --r-btn: 10px;
+  --border: 3px solid var(--ink);
+  --shadow: 6px 6px 0 var(--ink);
+
+  --font-display: "Unbounded", sans-serif;
+  --font-text: "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 1.55;
+  /* лёгкая бумажная фактура */
+  background-image: radial-gradient(rgba(37, 34, 44, 0.04) 1px, transparent 1px);
+  background-size: 9px 9px;
+}
+
+.display { font-family: var(--font-display); font-weight: 900; letter-spacing: 0.01em; }
+.mono { font-family: var(--font-mono); }
+
+a { color: var(--violet); }
+
+:focus-visible {
+  outline: 3px solid var(--neon);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ===== page = комикс-разворот ===== */
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--s4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+
+/* Мобильный DOM-порядок: hero → goal → gallery → socials → merch.
+   На десктопе галерея поднимается выше цели (см. IA.md). */
+@media (min-width: 768px) {
+  .gallery-panel { order: 1; }
+  .goal          { order: 2; }
+  .socials       { order: 3; }
+  .merch         { order: 4; }
+  .footer        { order: 5; }
+}
+
+.panel {
+  position: relative;
+  border: var(--border);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow);
+  background: #fff;
+  padding: var(--s5) var(--s4);
+  overflow: hidden;
+}
+
+h2.display {
+  margin: 0 0 var(--s4);
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+}
+
+/* halftone-растр */
+.halftone {
+  position: absolute;
+  pointer-events: none;
+  background-image: radial-gradient(var(--ink) 1.2px, transparent 1.2px);
+  background-size: 10px 10px;
+  opacity: 0.18;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, var(--violet) 0%, var(--neon) 100%);
+  color: var(--paper);
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s4);
+}
+
+.hero-dots { inset: auto -40px -40px auto; width: 260px; height: 260px; border-radius: 50%; background-image: radial-gradient(var(--paper) 1.4px, transparent 1.4px); }
+
+.hero-art { margin: 0; }
+
+.hero-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--border);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow);
+}
+
+.hero-copy { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; }
+
+.kicker { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.9; }
+
+h1.display {
+  margin: 0;
+  font-size: clamp(2.4rem, 7vw, 4.4rem);
+  line-height: 1.05;
+  text-shadow: 4px 4px 0 var(--ink);
+}
+
+.tagline { margin: 0; font-size: 1.1rem; max-width: 34ch; }
+
+.hero-socials { display: flex; gap: var(--s3); margin-top: var(--s2); }
+
+.hero-socials a {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  background: var(--ink);
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+.hero-socials a:hover { transform: translateY(-3px) rotate(-4deg); }
+.hero-socials svg { width: 22px; height: 22px; fill: var(--paper); }
+
+/* ===== стикер-кнопка (signature-мотив записок) ===== */
+.sticker-btn {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  color: #fff;
+  background: var(--neon);
+  border: var(--border);
+  border-radius: 2px; /* бумага почти не скругляется */
+  box-shadow: var(--shadow);
+  padding: var(--s3) var(--s4);
+  transform: rotate(-2deg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.sticker-btn:hover { transform: rotate(0deg) translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
+.sticker-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--ink); }
+.cta-merch { background: var(--brick); }
+
+/* ===== GOAL ===== */
+.goal { background: var(--sage); }
+
+.goal-text { max-width: 52ch; font-size: 1.1rem; font-weight: 600; margin: 0 0 var(--s4); }
+
+.progress-wrap { margin-bottom: var(--s4); }
+
+.progress {
+  position: relative;
+  height: 54px;
+  border: var(--border);
+  border-radius: var(--r-panel);
+  background: var(--paper);
+  overflow: visible;
+}
+
+.progress-fill {
+  position: relative;
+  height: 100%;
+  width: 0%;
+  background: var(--neon);
+  border-radius: 10px 0 0 10px;
+  /* скошенный «мазок» на краю заливки */
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.fill-dots { inset: 0; background-image: radial-gradient(rgba(37,34,44,0.55) 1.4px, transparent 1.4px); background-size: 9px 9px; opacity: 0.35; }
+
+/* стикер с суммой едет по краю заливки */
+.note {
+  position: absolute;
+  top: -22px;
+  left: 0;
+  transform: translateX(-50%) rotate(-4deg);
+  background: #FBF6A3; /* жёлтый стикер из артов */
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 2px 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: left 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.goal-numbers { font-size: 0.95rem; margin: var(--s3) 0 0; }
+.goal-numbers span { font-weight: 700; }
+
+.goal-updated { font-size: 0.75rem; opacity: 0.75; margin: var(--s3) 0 0; }
+
+/* ===== GALLERY ===== */
+.gallery {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s3);
+  grid-auto-flow: dense;
+}
+
+@media (min-width: 768px) {
+  .gallery { grid-template-columns: repeat(3, 1fr); gap: var(--s4); }
+  .gallery li:nth-child(5n+1) { grid-column: span 2; }
+}
+
+.gallery button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: var(--border);
+  border-radius: var(--r-panel);
+  background: none;
+  cursor: zoom-in;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--ink);
+  transition: transform 0.15s ease;
+}
+/* лёгкий «приколотый полароид» разброс */
+.gallery li:nth-child(odd) button { transform: rotate(0.7deg); }
+.gallery li:nth-child(even) button { transform: rotate(-0.7deg); }
+.gallery button:hover { transform: rotate(0deg) scale(1.02); }
+
+.gallery img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ===== SOCIALS ===== */
+.social-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s4);
+}
+@media (min-width: 768px) { .social-cards { grid-template-columns: repeat(3, 1fr); } }
+
+.social-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  text-decoration: none;
+  color: var(--ink);
+  background: #FBF6A3;
+  border: var(--border);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+  padding: var(--s4);
+  transition: transform 0.15s ease;
+}
+.social-cards li:nth-child(1) .social-card { transform: rotate(-1.5deg); }
+.social-cards li:nth-child(2) .social-card { transform: rotate(1deg); background: #F4D8EF; }
+.social-cards li:nth-child(3) .social-card { transform: rotate(-0.8deg); background: #D8E8F4; }
+.social-card:hover { transform: rotate(0deg) translateY(-4px); }
+
+.social-name { font-size: 1.2rem; }
+.social-hook { font-size: 0.9rem; opacity: 0.8; }
+
+/* ===== MERCH ===== */
+.merch { background: var(--brick); color: var(--paper); }
+.merch-text { max-width: 48ch; margin: 0 0 var(--s4); }
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-panel);
+  padding: var(--s4);
+  text-align: center;
+  font-size: 0.9rem;
+}
+.footer p { margin: var(--s2) 0; }
+.footer a { color: var(--paper); margin: 0 var(--s2); }
+.footer-note { font-size: 0.72rem; opacity: 0.6; }
+
+/* ===== LIGHTBOX ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(37, 34, 44, 0.92);
+  display: grid;
+  place-items: center;
+}
+.lightbox[hidden] { display: none; }
+
+.lb-img {
+  max-width: min(92vw, 1100px);
+  max-height: 88vh;
+  border: var(--border);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow);
+  background: var(--paper);
+}
+
+.lightbox button {
+  position: fixed;
+  z-index: 51;
+  background: var(--paper);
+  color: var(--ink);
+  border: var(--border);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.lb-close { top: var(--s3); right: var(--s3); }
+.lb-prev { left: var(--s3); top: 50%; transform: translateY(-50%); }
+.lb-next { right: var(--s3); top: 50%; transform: translateY(-50%); }
+
+/* ===== breakpoints ===== */
+@media (min-width: 768px) {
+  .hero { grid-template-columns: 44% 1fr; align-items: center; padding: var(--s5); }
+  .panel { padding: var(--s6) var(--s5); }
+}
+
+@media (min-width: 1280px) {
+  .page { padding: var(--s5); }
+}
+
+/* ===== reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-fill, .note, .sticker-btn, .social-card, .gallery button, .hero-socials a { transition: none; }
+}
