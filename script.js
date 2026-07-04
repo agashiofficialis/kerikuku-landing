@@ -10,7 +10,6 @@ const LINKS = {
   kofi:      "https://ko-fi.com/kukukarina",
   bmc:       "https://buymeacoffee.com/kukukarina",
   instagram: "https://www.instagram.com/kuku_karina/",
-  threads:   "https://www.threads.com/@kuku_karina",
   x:         "https://x.com/kukukarina",
   merch:     "https://www.inprnt.com/gallery/kuku_karina/", // INPRNT print shop
 };
@@ -18,9 +17,9 @@ const LINKS = {
 const UTM_SOURCE = "landing";
 const UTM_MEDIUM = "cta";
 
-// Соцплатформы не терпят чужих query-параметров (Threads отвечает 429),
+// Соцплатформы не терпят чужих query-параметров (Meta отвечает 429),
 // и UTM там всё равно бесполезны — метим только донаты и магазин.
-const NO_UTM = new Set(["instagram", "threads", "x"]);
+const NO_UTM = new Set(["instagram", "x"]);
 
 function isRealUrl(value) {
   return /^https?:\/\//i.test(value);
@@ -148,7 +147,49 @@ function closeLightbox() {
   if (lastFocus) lastFocus.focus();
 }
 
-items.forEach((btn, i) => btn.addEventListener("click", () => openLightbox(i)));
+/* ---------- 3a. КАРУСЕЛЬ-«РУЛЕТКА» ---------- */
+const fold = document.getElementById("art-fold");
+const track = document.getElementById("gallery");
+const cells = Array.from(track.children);
+
+function updateCurrent() {
+  const mid = track.scrollLeft + track.clientWidth / 2;
+  let best = 0;
+  let bestD = Infinity;
+  cells.forEach((li, i) => {
+    const c = li.offsetLeft + li.offsetWidth / 2;
+    const d = Math.abs(c - mid);
+    if (d < bestD) { bestD = d; best = i; }
+  });
+  cells.forEach((li, i) => li.classList.toggle("is-current", i === best));
+  return best;
+}
+
+let scrollTimer = null;
+track.addEventListener("scroll", () => {
+  if (scrollTimer) return;
+  scrollTimer = setTimeout(() => { scrollTimer = null; updateCurrent(); }, 80);
+});
+
+fold.addEventListener("toggle", () => { if (fold.open) updateCurrent(); });
+
+function scrollToCell(i) {
+  const li = cells[(i + cells.length) % cells.length];
+  li.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", inline: "center", block: "nearest" });
+}
+
+document.getElementById("car-prev").addEventListener("click", () => scrollToCell(updateCurrent() - 1));
+document.getElementById("car-next").addEventListener("click", () => scrollToCell(updateCurrent() + 1));
+
+/* клик по боковой карте — докрутить её в центр; по центральной — лайтбокс */
+items.forEach((btn, i) => btn.addEventListener("click", () => {
+  const li = btn.closest("li");
+  if (li.classList.contains("is-current")) {
+    openLightbox(i);
+  } else {
+    li.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", inline: "center", block: "nearest" });
+  }
+}));
 
 document.getElementById("lb-close").addEventListener("click", closeLightbox);
 document.getElementById("lb-prev").addEventListener("click", () => openLightbox(current - 1));

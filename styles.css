@@ -227,20 +227,41 @@ h1.display {
 
 .goal-updated { font-size: 0.75rem; opacity: 0.75; margin: var(--s3) 0 0; }
 
-/* ===== GALLERY ===== */
+/* ===== GALLERY: раскрывающаяся карусель-«рулетка» ===== */
+.art-fold summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+.art-fold summary::-webkit-details-marker { display: none; }
+.art-fold summary h2 { margin: 0; }
+
+.fold-hint { font-size: 0.8rem; opacity: 0.7; white-space: nowrap; }
+.fold-arrow { display: inline-block; transition: transform 0.2s ease; }
+.art-fold[open] .fold-arrow { transform: rotate(180deg); }
+
+.carousel-wrap { position: relative; margin-top: var(--s4); }
+
 .gallery {
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  --card-w: min(64vw, 300px);
+  display: flex;
   gap: var(--s3);
-  grid-auto-flow: dense;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: var(--s3) 0 var(--s4);
+  padding-inline: calc(50% - var(--card-w) / 2);
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
-@media (min-width: 768px) {
-  .gallery { grid-template-columns: repeat(3, 1fr); gap: var(--s4); }
-  .gallery li:nth-child(5n+1) { grid-column: span 2; }
+.gallery li {
+  flex: 0 0 var(--card-w);
+  scroll-snap-align: center;
 }
 
 .gallery button {
@@ -250,17 +271,37 @@ h1.display {
   border: var(--border);
   border-radius: var(--r-panel);
   background: none;
-  cursor: zoom-in;
+  cursor: pointer;
   overflow: hidden;
   box-shadow: 4px 4px 0 var(--ink);
-  transition: transform 0.15s ease;
+  transform: scale(0.88);
+  transition: transform 0.25s ease;
 }
-/* лёгкий «приколотый полароид» разброс */
-.gallery li:nth-child(odd) button { transform: rotate(0.7deg); }
-.gallery li:nth-child(even) button { transform: rotate(-0.7deg); }
-.gallery button:hover { transform: rotate(0deg) scale(1.02); }
+
+/* «рулетка»: выбранная карта чуть крупнее соседей */
+.gallery li.is-current button { transform: scale(1.05); cursor: zoom-in; }
 
 .gallery img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.car-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 46px;
+  height: 46px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.car-prev { left: calc(-1 * var(--s2)); }
+.car-next { right: calc(-1 * var(--s2)); }
 
 /* ===== SOCIALS ===== */
 .social-cards {
@@ -270,7 +311,7 @@ h1.display {
   display: grid;
   gap: var(--s4);
 }
-@media (min-width: 768px) { .social-cards { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 768px) { .social-cards { grid-template-columns: repeat(2, 1fr); } }
 
 .social-card {
   display: flex;
@@ -361,5 +402,5 @@ h1.display {
 /* ===== reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .progress-fill, .note, .sticker-btn, .social-card, .gallery button, .hero-socials a { transition: none; }
+  .progress-fill, .note, .sticker-btn, .social-card, .gallery button, .hero-socials a, .fold-arrow { transition: none; }
 }
