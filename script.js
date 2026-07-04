@@ -7,12 +7,12 @@
 
 /* ---------- 1. ССЫЛКИ (заменить плейсхолдеры на реальные URL) ---------- */
 const LINKS = {
-  kofi:      "[ВСТАВИТЬ ССЫЛКУ]", // например https://ko-fi.com/имяпрофиля
-  bmc:       "[ВСТАВИТЬ ССЫЛКУ]", // например https://buymeacoffee.com/имяпрофиля
-  instagram: "https://www.instagram.com/kerikuku",
-  tiktok:    "[ВСТАВИТЬ ССЫЛКУ]",
-  telegram:  "[ВСТАВИТЬ ССЫЛКУ]",
-  merch:     "[ВСТАВИТЬ ССЫЛКУ]", // Ko-fi Shop / Printful / маркетплейс
+  kofi:      "https://ko-fi.com/kukukarina",
+  bmc:       "https://buymeacoffee.com/kukukarina",
+  instagram: "https://www.instagram.com/kuku_karina/",
+  threads:   "https://www.threads.com/@kuku_karina",
+  x:         "https://x.com/kukukarina",
+  merch:     "https://www.inprnt.com/gallery/kuku_karina/", // INPRNT print shop
 };
 
 const UTM_SOURCE = "landing";
