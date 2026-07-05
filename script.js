@@ -132,19 +132,14 @@ if (!reducedMotion) {
     .join("");
 }
 
-// секции проявляются при скролле
+// блоки проявляются при скролле вниз и прячутся, когда уходят из виду
 const toReveal = document.querySelectorAll(".reveal");
 if (reducedMotion || !("IntersectionObserver" in window)) {
   toReveal.forEach((el) => el.classList.add("in"));
 } else {
   const ro = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        ro.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.15 });
+    entries.forEach((e) => e.target.classList.toggle("in", e.isIntersecting));
+  }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
   toReveal.forEach((el) => ro.observe(el));
 }
 

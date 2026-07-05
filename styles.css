@@ -5,6 +5,7 @@
 
 :root {
   --paper:  #F1ECDF;
+  --cream:  #F4EAD8; /* кофе с молоком / слоновая кость — текст hero */
   --ink:    #25222C;
   --sage:   #A9AE94;
   --neon:   #C92BE0;
@@ -70,7 +71,9 @@ a { color: var(--violet); }
   background: #fff;
   padding: var(--s5) var(--s4);
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.panel:hover { transform: translate(-2px, -2px); box-shadow: 9px 9px 0 var(--ink); }
 
 h2.display {
   margin: 0 0 var(--s4);
@@ -90,7 +93,10 @@ h2.display {
 .hero {
   background: var(--paper) url("assets/hero-bg.jpg") center / cover no-repeat;
   background-image: image-set(url("assets/hero-bg.webp") type("image/webp"), url("assets/hero-bg.jpg") type("image/jpeg"));
-  color: var(--ink);
+  /* узкая панель: cover сам даёт горизонтальный запас — прижимаем влево, картинка уходит правее */
+  background-size: cover;
+  background-position: 22% center;
+  color: var(--cream);
   display: grid;
   gap: var(--s4);
   padding: var(--s4);
@@ -154,8 +160,8 @@ h2.display {
   font-size: clamp(1.05rem, 2.2vw, 1.35rem);
   font-weight: 700;
   line-height: 1.35;
-  color: var(--violet);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  color: var(--cream);
+  text-shadow: 2px 2px 0 var(--ink);
 }
 
 /* буквы заголовка (оборачиваются скриптом) */
@@ -173,21 +179,27 @@ h2.display {
 .s2 { bottom: 18%; right: 24%; font-size: 1rem; animation-delay: -2.5s; animation-duration: 9s; }
 .s3 { top: 30%; left: 46%; font-size: 1.2rem; animation-delay: -5s; animation-duration: 8s; }
 
-.kicker { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.9; }
+.kicker {
+  margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-shadow: 1px 1px 0 rgba(37, 34, 44, 0.55);
+}
 
 h1.display {
   margin: 0;
   font-size: clamp(2.4rem, 7vw, 4.4rem);
   line-height: 1.05;
-  text-shadow: 4px 4px 0 rgba(255, 255, 255, 0.9);
+  text-shadow: 4px 4px 0 var(--ink);
 }
 
 .tagline {
   margin: 0;
   font-size: 1.1rem;
   max-width: 34ch;
-  /* мягкая подсветка — текст читается поверх паутинки баннера */
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.9), 0 0 14px rgba(255, 255, 255, 0.7);
+  /* тёмная подложка — кремовый текст читается поверх баннера */
+  text-shadow: 1px 1px 0 rgba(37, 34, 44, 0.7), 0 0 12px rgba(37, 34, 44, 0.35);
 }
 
 .hero-socials { display: flex; gap: var(--s3); margin-top: var(--s2); }
@@ -264,6 +276,31 @@ h1.display {
 
 .progress-wrap { margin-bottom: var(--s4); }
 
+/* полоса + приз-цель (планшет со стилусом) в одном ряду */
+.progress-row { display: flex; align-items: center; gap: var(--s3); }
+.progress-row .progress { flex: 1; min-width: 0; }
+
+.goal-prize {
+  position: relative;
+  flex: 0 0 clamp(84px, 12vw, 128px);
+  transform-origin: 72% 88%;
+  animation: prize-tap 1.8s ease-in-out infinite;
+}
+.goal-prize img { display: block; width: 100%; height: auto; }
+
+/* звёздочки, которые «выбивает» стилус */
+.pop {
+  position: absolute;
+  color: var(--neon);
+  font-size: 0.95rem;
+  opacity: 0;
+  pointer-events: none;
+  animation: star-pop 1.8s ease-out infinite;
+}
+.p1 { top: 2%; right: 4%; --dx: 10px; animation-delay: 0s; }
+.p2 { top: 18%; right: -8px; --dx: 16px; font-size: 0.7rem; animation-delay: 0.12s; }
+.p3 { top: -6%; right: 22%; --dx: -6px; font-size: 0.8rem; animation-delay: 0.2s; }
+
 .progress {
   position: relative;
   height: 54px;
@@ -310,8 +347,20 @@ h1.display {
 
 .goal-updated { font-size: 0.75rem; opacity: 0.75; margin: var(--s3) 0 0; }
 
-/* ===== MERCH ===== */
-.merch { background: var(--brick); color: var(--paper); }
+/* ===== MERCH: баннер-арт фоном ===== */
+.merch {
+  background: var(--paper) url("assets/merch-bg.jpg") center / cover no-repeat;
+  background-image: image-set(url("assets/merch-bg.webp") type("image/webp"), url("assets/merch-bg.jpg") type("image/jpeg"));
+  color: var(--ink);
+}
+.merch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 238, 243, 0.68);
+  pointer-events: none;
+}
+.merch > * { position: relative; }
 .merch-text { max-width: 48ch; margin: 0 0 var(--s4); }
 
 /* ===== FOOTER ===== */
@@ -380,9 +429,34 @@ h1.display {
   50%      { transform: translateX(-50%) rotate(-1.5deg); }
 }
 
+/* стилус стукается о планшет */
+@keyframes prize-tap {
+  0%, 52%, 100% { transform: rotate(0deg) translateY(0); }
+  60%           { transform: rotate(-4deg) translateY(3px); }
+  68%           { transform: rotate(2.5deg) translateY(-2px); }
+  76%           { transform: rotate(-1deg) translateY(1px); }
+  84%           { transform: rotate(0deg) translateY(0); }
+}
+
+/* ...и выбивает звёздочки */
+@keyframes star-pop {
+  0%, 58%  { opacity: 0; transform: translate(0, 0) scale(0.3); }
+  66%      { opacity: 1; transform: translate(calc(var(--dx, 8px) / 2), -9px) scale(1); }
+  88%      { opacity: 0; transform: translate(var(--dx, 8px), -22px) scale(1.15); }
+  100%     { opacity: 0; transform: translate(var(--dx, 8px), -22px) scale(1.15); }
+}
+
 /* ===== breakpoints ===== */
 @media (min-width: 768px) {
-  .hero { grid-template-columns: 44% 1fr; align-items: center; padding: var(--s5); gap: var(--s5); }
+  .hero {
+    grid-template-columns: 44% 1fr;
+    align-items: center;
+    padding: var(--s5);
+    gap: var(--s5);
+    /* широкая панель: cover упирается в ширину — зум даёт запас, сдвигаем картинку правее */
+    background-size: 112% auto;
+    background-position: 0% 24%;
+  }
   .panel { padding: var(--s6) var(--s5); }
 }
 
@@ -402,7 +476,8 @@ h1.display {
 /* ===== reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .progress-fill, .note, .sticker-btn, .hero-socials a, .sticker-btn::after { transition: none; }
-  .hero-art, .hero-copy > *, .ltr, .spark, .note { animation: none; }
+  .progress-fill, .note, .sticker-btn, .hero-socials a, .sticker-btn::after, .panel { transition: none; }
+  .hero-art, .hero-copy > *, .ltr, .spark, .note, .goal-prize, .pop { animation: none; }
+  .pop { opacity: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
