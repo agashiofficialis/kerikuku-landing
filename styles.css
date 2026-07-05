@@ -152,7 +152,7 @@ h2.display {
   pointer-events: none;
 }
 .hero-art::before { top: -16px; right: 20px; transform: rotate(7deg); }
-.hero-art::after { bottom: 96px; left: -38px; transform: rotate(105deg); }
+.hero-art::after { bottom: 96px; left: -58px; transform: rotate(105deg); }
 
 .hero-copy, .hero-art { position: relative; z-index: 2; }
 .hero-copy { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; }
@@ -237,14 +237,21 @@ h1.display {
   text-shadow: 3px 3px 0 var(--paper), -1px -1px 0 var(--paper), 1px -1px 0 var(--paper), -1px 1px 0 var(--paper);
 }
 
-.tagline {
+/* абзац «о себе» — моношрифт как у кикера сверху блока */
+.about-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
   margin: 0;
-  font-size: 1.05rem;
-  max-width: 40ch;
+  max-width: 46ch;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.65;
   color: var(--ink);
-  /* лёгкая светлая подложка — чёрный текст чётко читается поверх паутинки */
   text-shadow: 0 1px 5px rgba(241, 236, 223, 0.9), 0 0 2px rgba(241, 236, 223, 0.9);
 }
+.about-body p { margin: 0; }
+.about-body strong { font-weight: 700; }
 
 .hero-socials { display: flex; gap: var(--s3); margin-top: var(--s2); }
 
@@ -295,7 +302,8 @@ h1.display {
 
 /* ===== GOAL: баннер-арт фоном ===== */
 .goal {
-  background: var(--paper) url("assets/goal-bg.jpg") center / cover no-repeat;
+  /* персонаж в правой части баннера — прижимаем фон вправо, слева чистая зона под текст (ПК и мобайл) */
+  background: var(--paper) url("assets/goal-bg.jpg") right center / cover no-repeat;
   background-image: image-set(url("assets/goal-bg.webp") type("image/webp"), url("assets/goal-bg.jpg") type("image/jpeg"));
 }
 
@@ -523,7 +531,7 @@ h1.display {
 @media (max-width: 767px) {
   /* мобильная версия: тот же характер, что и на ПК */
   .hero-art { max-width: 430px; margin-inline: auto; transform: rotate(-2deg); }
-  .hero-art::after { bottom: 60px; left: -34px; }
+  .hero-art::after { bottom: 60px; left: -50px; }
   .donate-btns { gap: var(--s4); }
   .progress { height: 48px; }
   .s3 { left: 8%; top: 4%; }
