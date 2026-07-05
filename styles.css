@@ -457,6 +457,17 @@ h1.display {
 .arts-arrow { display: inline-block; transition: transform 0.3s ease; }
 .portfolio.open .arts-arrow { transform: rotate(180deg); }
 
+/* кнопка My Arts + маскот в ряд */
+.arts-cta { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
+.arts-cta .mascot-arts {
+  position: static;
+  z-index: auto;
+  flex: 0 0 auto;
+  height: clamp(96px, 13vw, 140px);
+  animation: mascot-thwip 3.2s ease-in-out infinite;
+}
+.arts-cta .mascot-arts img { width: auto; height: 100%; }
+
 /* конвейер свёрнут по умолчанию — блок компактный, как мерч */
 .conveyor {
   display: flex;
@@ -591,6 +602,14 @@ h1.display {
   50%      { translate: 0 -9px; }
 }
 
+/* маскот My Arts — «выстреливает паутиной»: покачивание + периодический выпад */
+@keyframes mascot-thwip {
+  0%, 60%, 100% { transform: translateY(0) rotate(0deg); }
+  68%           { transform: translateY(-6px) rotate(-5deg) scale(1.05); }
+  76%           { transform: translateY(0) rotate(2deg); }
+  84%           { transform: translateY(-2px) rotate(-1deg); }
+}
+
 /* ===== breakpoints ===== */
 @media (min-width: 768px) {
   .hero {
@@ -616,11 +635,54 @@ h1.display {
   .page { padding: var(--s5); }
 }
 
+/* ===== LIGHTBOX: просмотр арта в масштабе ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--s4);
+  background: rgba(37, 34, 44, 0.9);
+  backdrop-filter: blur(3px);
+}
+.lightbox[hidden] { display: none; }
+.lb-img {
+  max-width: min(94vw, 1100px);
+  max-height: 90vh;
+  border: var(--border);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow);
+  background: var(--paper);
+}
+.lb-btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.15s ease;
+}
+.lb-btn:hover { transform: scale(1.08); }
+.lb-close { top: var(--s4); right: var(--s4); }
+.lb-prev { left: var(--s3); top: 50%; transform: translateY(-50%); }
+.lb-next { right: var(--s3); top: 50%; transform: translateY(-50%); }
+.lb-prev:hover { transform: translateY(-50%) scale(1.08); }
+.lb-next:hover { transform: translateY(-50%) scale(1.08); }
+
 /* ===== reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .progress-fill, .note, .sticker-btn, .hero-socials a, .sticker-btn::after, .panel { transition: none; }
-  .hero-art, .hero-copy > *, .ltr, .spark, .note, .goal-prize img, .pop, .mascot, .belt { animation: none; }
+  .hero-art, .hero-copy > *, .ltr, .spark, .note, .goal-prize img, .pop, .mascot, .belt, .mascot-arts { animation: none; }
   .pop { opacity: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }

@@ -165,5 +165,51 @@ if (artsToggle) {
   });
 }
 
+/* ---------- 5. LIGHTBOX: клик по арту → просмотр в масштабе ---------- */
+const lightbox = document.getElementById("lightbox");
+if (lightbox) {
+  const lbImg = document.getElementById("lb-img");
+  const beltImgs = document.querySelectorAll(".belt img");
+
+  // упорядоченный список уникальных артов (art-00..40) для навигации ‹ ›
+  const fullOf = (src) => src.replace(/\.webp$/i, "-full.webp");
+  const order = [...new Set([...beltImgs].map((i) => i.getAttribute("src")))].sort();
+  let current = -1;
+  let lastFocus = null;
+
+  function show(i) {
+    current = (i + order.length) % order.length;
+    lbImg.src = fullOf(order[current]);
+  }
+  function open(src) {
+    lastFocus = document.activeElement;
+    show(order.indexOf(src));
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+    document.getElementById("lb-close").focus();
+  }
+  function close() {
+    lightbox.hidden = true;
+    lbImg.removeAttribute("src");
+    document.body.style.overflow = "";
+    if (lastFocus) lastFocus.focus();
+  }
+
+  beltImgs.forEach((img) => {
+    img.style.cursor = "zoom-in";
+    img.addEventListener("click", () => open(img.getAttribute("src")));
+  });
+  document.getElementById("lb-close").addEventListener("click", close);
+  document.getElementById("lb-prev").addEventListener("click", () => show(current - 1));
+  document.getElementById("lb-next").addEventListener("click", () => show(current + 1));
+  lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
+  document.addEventListener("keydown", (e) => {
+    if (lightbox.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowLeft") show(current - 1);
+    else if (e.key === "ArrowRight") show(current + 1);
+  });
+}
+
 /* ---------- прочее ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();
