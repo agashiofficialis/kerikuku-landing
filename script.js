@@ -88,7 +88,6 @@ Promise.all([
     document.getElementById("goal-text").textContent = goal.goal_text;
     document.getElementById("goal-collected").textContent = collected;
     document.getElementById("goal-target").textContent = target;
-    document.getElementById("goal-updated").textContent = `updated ${goal.updated}`;
     document.getElementById("progress-note").textContent = collected;
 
     const bar = document.getElementById("progress");
@@ -132,14 +131,25 @@ if (!reducedMotion) {
     .join("");
 }
 
-// блоки проявляются при скролле вниз и прячутся, когда уходят из виду
+// блоки проявляются при скролле
 const toReveal = document.querySelectorAll(".reveal");
+// на телефонах/тач-экранах reveal одноразовый: не прячем при скролле вверх.
+// Иначе адресная строка (меняет высоту вьюпорта) и инерционный скролл
+// передёргивают наблюдатель — элементы «трясутся».
+const oneWayReveal = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
 if (reducedMotion || !("IntersectionObserver" in window)) {
   toReveal.forEach((el) => el.classList.add("in"));
 } else {
   const ro = new IntersectionObserver((entries) => {
-    entries.forEach((e) => e.target.classList.toggle("in", e.isIntersecting));
-  }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add("in");
+        if (oneWayReveal) ro.unobserve(e.target);
+      } else if (!oneWayReveal) {
+        e.target.classList.remove("in");
+      }
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
   toReveal.forEach((el) => ro.observe(el));
 }
 
