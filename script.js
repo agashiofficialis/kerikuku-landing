@@ -12,7 +12,6 @@ const LINKS = {
   tiktok:    "https://www.tiktok.com/@kukukarina",
   x:         "https://x.com/kukukarina",
   merch:     "https://www.inprnt.com/gallery/kuku_karina/", // INPRNT print shop
-  myart:     "https://www.instagram.com/kuku_karina/",      // «My Arts» — вся галерея (можно сменить на портфолио-сайт)
 };
 
 const UTM_SOURCE = "landing";
@@ -20,7 +19,7 @@ const UTM_MEDIUM = "cta";
 
 // Соцплатформы не терпят чужих query-параметров (Meta отвечает 429),
 // и UTM там всё равно бесполезны — метим только донаты и магазин.
-const NO_UTM = new Set(["instagram", "tiktok", "x", "myart"]);
+const NO_UTM = new Set(["instagram", "tiktok", "x"]);
 
 function isRealUrl(value) {
   return /^https?:\/\//i.test(value);
@@ -152,6 +151,18 @@ if (reducedMotion || !("IntersectionObserver" in window)) {
     });
   }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
   toReveal.forEach((el) => ro.observe(el));
+}
+
+/* ---------- 4. PORTFOLIO: раскрытие + запуск карусели ---------- */
+const artsToggle = document.getElementById("arts-toggle");
+if (artsToggle) {
+  const portfolio = document.getElementById("portfolio");
+  const conveyor = document.getElementById("conveyor");
+  artsToggle.addEventListener("click", () => {
+    const open = portfolio.classList.toggle("open");
+    artsToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    conveyor.setAttribute("aria-hidden", open ? "false" : "true");
+  });
 }
 
 /* ---------- прочее ---------- */
