@@ -173,19 +173,20 @@ h2.display {
   transform: rotate(4deg);
   animation: mascot-bob 4.5s ease-in-out infinite;
 }
-.mascot-goal {
-  width: clamp(120px, 16vw, 190px);
-  right: 8px;
-  bottom: 6px;
+/* маскоты donate/merch — инлайн в ряд справа от кнопок, в полный рост */
+.donate-btns .mascot-goal,
+.merch-cta .mascot-merch {
+  position: static;
+  z-index: auto;
+  flex: 0 0 auto;
   transform: rotate(-3deg);
-  animation: mascot-bob 5.2s ease-in-out infinite 0.4s;
 }
-.mascot-merch {
-  width: clamp(130px, 18vw, 210px);
-  left: 66%;
-  bottom: -30px;
-  animation: mascot-bob 4.8s ease-in-out infinite 0.8s;
-}
+.donate-btns .mascot-goal { height: clamp(104px, 13vw, 148px); animation: mascot-bob 5.2s ease-in-out infinite 0.4s; }
+.merch-cta .mascot-merch  { height: clamp(90px, 12vw, 128px); animation: mascot-bob 4.8s ease-in-out infinite 0.8s; }
+.donate-btns .mascot-goal img,
+.merch-cta .mascot-merch img { width: auto; height: 100%; }
+
+.merch-cta { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
 
 /* каскадное появление текста hero */
 .hero-copy > * { animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -401,9 +402,6 @@ h1.display {
 
 .goal-updated { font-size: 0.75rem; opacity: 0.75; margin: var(--s3) 0 0; }
 
-/* место снизу-справа под маскота donate-блока */
-.goal { padding-bottom: var(--s7); }
-
 /* ===== MERCH: баннер-арт фоном ===== */
 .merch {
   background: var(--paper) url("assets/merch-bg.jpg") center / cover no-repeat;
@@ -420,7 +418,6 @@ h1.display {
 }
 .merch > * { position: relative; z-index: 2; }
 .merch .mascot { z-index: 1; }
-.merch { padding-bottom: var(--s7); }
 .merch-text { max-width: 48ch; margin: 0 0 var(--s4); }
 
 /* ===== FOOTER ===== */
