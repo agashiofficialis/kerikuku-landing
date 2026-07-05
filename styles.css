@@ -96,18 +96,82 @@ h2.display {
   padding: var(--s4);
 }
 
-.hero-art { margin: 0; }
+/* аватар — полароидный снимок, приклеенный скотчем */
+.hero-art {
+  margin: 0;
+  position: relative;
+  background: #fff;
+  border: var(--border);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  padding: 14px 14px 10px;
+  transform: rotate(-2.5deg);
+  animation: polaroid-drop 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
 
 .hero-art img {
   display: block;
   width: 100%;
   height: auto;
-  border: var(--border);
-  border-radius: var(--r-panel);
-  box-shadow: var(--shadow);
+  border-radius: 2px;
 }
 
+.hero-art figcaption {
+  padding: 10px 4px 6px;
+  font-size: 0.8rem;
+  color: var(--ink);
+  opacity: 0.65;
+  text-align: center;
+}
+
+/* скотч: полоска сверху-справа и полоска слева-снизу */
+.hero-art::before,
+.hero-art::after {
+  content: "";
+  position: absolute;
+  width: 112px;
+  height: 34px;
+  background: rgba(255, 244, 190, 0.72);
+  border: 1px solid rgba(37, 34, 44, 0.22);
+  box-shadow: 0 2px 5px rgba(37, 34, 44, 0.12);
+  pointer-events: none;
+}
+.hero-art::before { top: -16px; right: 20px; transform: rotate(7deg); }
+.hero-art::after { bottom: 96px; left: -38px; transform: rotate(105deg); }
+
 .hero-copy { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; }
+
+/* каскадное появление текста hero */
+.hero-copy > * { animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-copy > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-copy > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-copy > *:nth-child(3) { animation-delay: 0.45s; }
+.hero-copy > *:nth-child(4) { animation-delay: 0.6s; }
+.hero-copy > *:nth-child(5) { animation-delay: 0.75s; }
+
+.about-lead {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--violet);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* буквы заголовка (оборачиваются скриптом) */
+.ltr { display: inline-block; animation: letter-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* парящие искры */
+.spark {
+  position: absolute;
+  color: var(--violet);
+  opacity: 0.55;
+  pointer-events: none;
+  animation: spark-float 7s ease-in-out infinite;
+}
+.s1 { top: 12%; right: 8%; font-size: 1.6rem; }
+.s2 { bottom: 18%; right: 24%; font-size: 1rem; animation-delay: -2.5s; animation-duration: 9s; }
+.s3 { top: 30%; left: 46%; font-size: 1.2rem; animation-delay: -5s; animation-duration: 8s; }
 
 .kicker { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.9; }
 
@@ -188,6 +252,14 @@ h1.display {
 }
 .goal > * { position: relative; }
 
+.goal-sub {
+  margin: calc(-1 * var(--s3)) 0 var(--s4);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
 .goal-text { max-width: 52ch; font-size: 1.1rem; font-weight: 600; margin: 0 0 var(--s4); }
 
 .progress-wrap { margin-bottom: var(--s4); }
@@ -216,8 +288,9 @@ h1.display {
   overflow: hidden;
 }
 
-/* стикер с суммой едет по краю заливки */
+/* стикер с суммой едет по краю заливки и слегка покачивается */
 .note {
+  animation: note-sway 5s ease-in-out infinite;
   position: absolute;
   top: -22px;
   left: 0;
@@ -252,12 +325,74 @@ h1.display {
 }
 .footer p { margin: var(--s2) 0; }
 .footer a { color: var(--paper); margin: 0 var(--s2); }
+.footer-contact { font-size: 1rem; }
+.footer-contact a { color: #FBF6A3; font-weight: 700; text-decoration-style: wavy; text-underline-offset: 4px; }
 .footer-note { font-size: 0.72rem; opacity: 0.6; }
+
+/* ===== блик на стикер-кнопках ===== */
+.sticker-btn { position: relative; overflow: hidden; }
+.sticker-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+.sticker-btn:hover::after { left: 130%; }
+
+/* ===== scroll-reveal ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* ===== keyframes ===== */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes letter-up {
+  from { opacity: 0; transform: translateY(0.6em) rotate(5deg); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes polaroid-drop {
+  0%   { opacity: 0; transform: rotate(-9deg) translateY(-46px) scale(1.04); }
+  65%  { opacity: 1; transform: rotate(-1deg) translateY(5px) scale(1); }
+  100% { opacity: 1; transform: rotate(-2.5deg) translateY(0); }
+}
+
+@keyframes spark-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(12deg); }
+}
+
+@keyframes note-sway {
+  0%, 100% { transform: translateX(-50%) rotate(-5deg); }
+  50%      { transform: translateX(-50%) rotate(-1.5deg); }
+}
 
 /* ===== breakpoints ===== */
 @media (min-width: 768px) {
-  .hero { grid-template-columns: 44% 1fr; align-items: center; padding: var(--s5); }
+  .hero { grid-template-columns: 44% 1fr; align-items: center; padding: var(--s5); gap: var(--s5); }
   .panel { padding: var(--s6) var(--s5); }
+}
+
+@media (max-width: 767px) {
+  /* мобильная версия: тот же характер, что и на ПК */
+  .hero-art { max-width: 430px; margin-inline: auto; transform: rotate(-2deg); }
+  .hero-art::after { bottom: 60px; left: -34px; }
+  .donate-btns { gap: var(--s4); }
+  .progress { height: 48px; }
+  .s3 { left: 8%; top: 4%; }
 }
 
 @media (min-width: 1280px) {
@@ -267,5 +402,7 @@ h1.display {
 /* ===== reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .progress-fill, .note, .sticker-btn, .hero-socials a { transition: none; }
+  .progress-fill, .note, .sticker-btn, .hero-socials a, .sticker-btn::after { transition: none; }
+  .hero-art, .hero-copy > *, .ltr, .spark, .note { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
 }

@@ -120,5 +120,33 @@ Promise.all([
       "Goal numbers are temporarily unavailable — the Ko-fi button still works.";
   });
 
+/* ---------- 3. АНИМАЦИИ ---------- */
+// заголовок: буквы взлетают каскадом
+if (!reducedMotion) {
+  const h1 = document.getElementById("hero-title");
+  const text = h1.textContent;
+  h1.setAttribute("aria-label", text);
+  h1.innerHTML = text
+    .split("")
+    .map((ch, i) => `<span class="ltr" aria-hidden="true" style="animation-delay:${(0.18 + i * 0.06).toFixed(2)}s">${ch}</span>`)
+    .join("");
+}
+
+// секции проявляются при скролле
+const toReveal = document.querySelectorAll(".reveal");
+if (reducedMotion || !("IntersectionObserver" in window)) {
+  toReveal.forEach((el) => el.classList.add("in"));
+} else {
+  const ro = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add("in");
+        ro.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  toReveal.forEach((el) => ro.observe(el));
+}
+
 /* ---------- прочее ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();
