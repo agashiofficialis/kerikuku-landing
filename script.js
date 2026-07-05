@@ -1,8 +1,7 @@
 /* ============================================================
    Karina landing — vanilla JS
    1) LINKS: единственное место, где правятся все внешние ссылки
-   2) Донат-цель из donation-goal.json
-   3) Галерея: лайтбокс + lazy loading (native)
+   2) Донат-цель: живой счётчик (Worker) + donation-goal.json
    ============================================================ */
 
 /* ---------- 1. ССЫЛКИ (заменить плейсхолдеры на реальные URL) ---------- */
@@ -10,6 +9,7 @@ const LINKS = {
   kofi:      "https://ko-fi.com/kukukarina",
   bmc:       "https://buymeacoffee.com/kukukarina",
   instagram: "https://www.instagram.com/kuku_karina/",
+  tiktok:    "https://www.tiktok.com/@kukukarina",
   x:         "https://x.com/kukukarina",
   merch:     "https://www.inprnt.com/gallery/kuku_karina/", // INPRNT print shop
 };
@@ -19,7 +19,7 @@ const UTM_MEDIUM = "cta";
 
 // Соцплатформы не терпят чужих query-параметров (Meta отвечает 429),
 // и UTM там всё равно бесполезны — метим только донаты и магазин.
-const NO_UTM = new Set(["instagram", "x"]);
+const NO_UTM = new Set(["instagram", "tiktok", "x"]);
 
 function isRealUrl(value) {
   return /^https?:\/\//i.test(value);
@@ -119,92 +119,6 @@ Promise.all([
     document.getElementById("goal-text").textContent =
       "Goal numbers are temporarily unavailable — the Ko-fi button still works.";
   });
-
-/* ---------- 3. ЛАЙТБОКС ---------- */
-const items = Array.from(document.querySelectorAll(".gallery button"));
-const lightbox = document.getElementById("lightbox");
-const lbImg = document.getElementById("lb-img");
-let current = -1;
-let lastFocus = null;
-
-function openLightbox(i) {
-  current = (i + items.length) % items.length;
-  const btn = items[current];
-  lbImg.src = btn.dataset.full;
-  lbImg.alt = btn.querySelector("img").alt;
-  if (lightbox.hidden) {
-    lastFocus = document.activeElement;
-    lightbox.hidden = false;
-    document.body.style.overflow = "hidden";
-    document.getElementById("lb-close").focus();
-  }
-}
-
-function closeLightbox() {
-  lightbox.hidden = true;
-  lbImg.src = "";
-  document.body.style.overflow = "";
-  if (lastFocus) lastFocus.focus();
-}
-
-/* ---------- 3a. КАРУСЕЛЬ-«РУЛЕТКА» ---------- */
-const fold = document.getElementById("art-fold");
-const track = document.getElementById("gallery");
-const cells = Array.from(track.children);
-
-function updateCurrent() {
-  const mid = track.scrollLeft + track.clientWidth / 2;
-  let best = 0;
-  let bestD = Infinity;
-  cells.forEach((li, i) => {
-    const c = li.offsetLeft + li.offsetWidth / 2;
-    const d = Math.abs(c - mid);
-    if (d < bestD) { bestD = d; best = i; }
-  });
-  cells.forEach((li, i) => li.classList.toggle("is-current", i === best));
-  return best;
-}
-
-let scrollTimer = null;
-track.addEventListener("scroll", () => {
-  if (scrollTimer) return;
-  scrollTimer = setTimeout(() => { scrollTimer = null; updateCurrent(); }, 80);
-});
-
-fold.addEventListener("toggle", () => { if (fold.open) updateCurrent(); });
-
-function scrollToCell(i) {
-  const li = cells[(i + cells.length) % cells.length];
-  li.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", inline: "center", block: "nearest" });
-}
-
-document.getElementById("car-prev").addEventListener("click", () => scrollToCell(updateCurrent() - 1));
-document.getElementById("car-next").addEventListener("click", () => scrollToCell(updateCurrent() + 1));
-
-/* клик по боковой карте — докрутить её в центр; по центральной — лайтбокс */
-items.forEach((btn, i) => btn.addEventListener("click", () => {
-  const li = btn.closest("li");
-  if (li.classList.contains("is-current")) {
-    openLightbox(i);
-  } else {
-    li.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", inline: "center", block: "nearest" });
-  }
-}));
-
-document.getElementById("lb-close").addEventListener("click", closeLightbox);
-document.getElementById("lb-prev").addEventListener("click", () => openLightbox(current - 1));
-document.getElementById("lb-next").addEventListener("click", () => openLightbox(current + 1));
-
-lightbox.addEventListener("click", (e) => {
-  if (e.target === lightbox) closeLightbox();
-});
-
-document.addEventListener("keydown", (e) => {
-  if (lightbox.hidden) return;
-  if (e.key === "Escape") closeLightbox();
-  if (e.key === "ArrowLeft") openLightbox(current - 1);
-  if (e.key === "ArrowRight") openLightbox(current + 1);
-});
 
 /* ---------- прочее ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();

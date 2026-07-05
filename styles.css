@@ -61,15 +61,6 @@ a { color: var(--violet); }
   gap: var(--s5);
 }
 
-/* Мобильный DOM-порядок: hero → goal → gallery → socials → merch.
-   На десктопе галерея поднимается выше цели (см. IA.md). */
-@media (min-width: 768px) {
-  .gallery-panel { order: 1; }
-  .goal          { order: 2; }
-  .socials       { order: 3; }
-  .merch         { order: 4; }
-  .footer        { order: 5; }
-}
 
 .panel {
   position: relative;
@@ -95,16 +86,15 @@ h2.display {
   opacity: 0.18;
 }
 
-/* ===== HERO ===== */
+/* ===== HERO: баннер-арт фоном ===== */
 .hero {
-  background: linear-gradient(135deg, var(--violet) 0%, var(--neon) 100%);
-  color: var(--paper);
+  background: var(--paper) url("assets/hero-bg.jpg") center / cover no-repeat;
+  background-image: image-set(url("assets/hero-bg.webp") type("image/webp"), url("assets/hero-bg.jpg") type("image/jpeg"));
+  color: var(--ink);
   display: grid;
   gap: var(--s4);
   padding: var(--s4);
 }
-
-.hero-dots { inset: auto -40px -40px auto; width: 260px; height: 260px; border-radius: 50%; background-image: radial-gradient(var(--paper) 1.4px, transparent 1.4px); }
 
 .hero-art { margin: 0; }
 
@@ -125,10 +115,16 @@ h1.display {
   margin: 0;
   font-size: clamp(2.4rem, 7vw, 4.4rem);
   line-height: 1.05;
-  text-shadow: 4px 4px 0 var(--ink);
+  text-shadow: 4px 4px 0 rgba(255, 255, 255, 0.9);
 }
 
-.tagline { margin: 0; font-size: 1.1rem; max-width: 34ch; }
+.tagline {
+  margin: 0;
+  font-size: 1.1rem;
+  max-width: 34ch;
+  /* мягкая подсветка — текст читается поверх паутинки баннера */
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.9), 0 0 14px rgba(255, 255, 255, 0.7);
+}
 
 .hero-socials { display: flex; gap: var(--s3); margin-top: var(--s2); }
 
@@ -176,8 +172,21 @@ h1.display {
   margin-right: var(--s2);
 }
 
-/* ===== GOAL ===== */
-.goal { background: var(--sage); }
+/* ===== GOAL: баннер-арт фоном ===== */
+.goal {
+  background: var(--paper) url("assets/goal-bg.jpg") center / cover no-repeat;
+  background-image: image-set(url("assets/goal-bg.webp") type("image/webp"), url("assets/goal-bg.jpg") type("image/jpeg"));
+}
+
+/* вуаль поверх баннера: текст читается, персонаж мягко проглядывает */
+.goal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 238, 243, 0.68);
+  pointer-events: none;
+}
+.goal > * { position: relative; }
 
 .goal-text { max-width: 52ch; font-size: 1.1rem; font-weight: 600; margin: 0 0 var(--s4); }
 
@@ -196,15 +205,16 @@ h1.display {
   position: relative;
   height: 100%;
   width: 0%;
-  background: var(--neon);
+  /* заливка — лента из мини-артов; неон проглядывает на стыке */
+  background: var(--neon) url("assets/goal-strip.jpg") left center repeat-x;
+  background-image: image-set(url("assets/goal-strip.webp") type("image/webp"), url("assets/goal-strip.jpg") type("image/jpeg"));
+  background-size: auto 100%;
   border-radius: 10px 0 0 10px;
   /* скошенный «мазок» на краю заливки */
   clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
   transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
 }
-
-.fill-dots { inset: 0; background-image: radial-gradient(rgba(37,34,44,0.55) 1.4px, transparent 1.4px); background-size: 9px 9px; opacity: 0.35; }
 
 /* стикер с суммой едет по краю заливки */
 .note {
@@ -227,113 +237,6 @@ h1.display {
 
 .goal-updated { font-size: 0.75rem; opacity: 0.75; margin: var(--s3) 0 0; }
 
-/* ===== GALLERY: раскрывающаяся карусель-«рулетка» ===== */
-.art-fold summary {
-  list-style: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s3);
-}
-.art-fold summary::-webkit-details-marker { display: none; }
-.art-fold summary h2 { margin: 0; }
-
-.fold-hint { font-size: 0.8rem; opacity: 0.7; white-space: nowrap; }
-.fold-arrow { display: inline-block; transition: transform 0.2s ease; }
-.art-fold[open] .fold-arrow { transform: rotate(180deg); }
-
-.carousel-wrap { position: relative; margin-top: var(--s4); }
-
-.gallery {
-  list-style: none;
-  margin: 0;
-  --card-w: min(64vw, 300px);
-  display: flex;
-  gap: var(--s3);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: var(--s3) 0 var(--s4);
-  padding-inline: calc(50% - var(--card-w) / 2);
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
-}
-
-.gallery li {
-  flex: 0 0 var(--card-w);
-  scroll-snap-align: center;
-}
-
-.gallery button {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: var(--border);
-  border-radius: var(--r-panel);
-  background: none;
-  cursor: pointer;
-  overflow: hidden;
-  box-shadow: 4px 4px 0 var(--ink);
-  transform: scale(0.88);
-  transition: transform 0.25s ease;
-}
-
-/* «рулетка»: выбранная карта чуть крупнее соседей */
-.gallery li.is-current button { transform: scale(1.05); cursor: zoom-in; }
-
-.gallery img { display: block; width: 100%; height: 100%; object-fit: cover; }
-
-.car-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  width: 46px;
-  height: 46px;
-  border: var(--border);
-  border-radius: 50%;
-  background: var(--paper);
-  color: var(--ink);
-  font-size: 1.3rem;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  box-shadow: 3px 3px 0 var(--ink);
-}
-.car-prev { left: calc(-1 * var(--s2)); }
-.car-next { right: calc(-1 * var(--s2)); }
-
-/* ===== SOCIALS ===== */
-.social-cards {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--s4);
-}
-@media (min-width: 768px) { .social-cards { grid-template-columns: repeat(2, 1fr); } }
-
-.social-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s1);
-  text-decoration: none;
-  color: var(--ink);
-  background: #FBF6A3;
-  border: var(--border);
-  border-radius: 2px;
-  box-shadow: var(--shadow);
-  padding: var(--s4);
-  transition: transform 0.15s ease;
-}
-.social-cards li:nth-child(1) .social-card { transform: rotate(-1.5deg); }
-.social-cards li:nth-child(2) .social-card { transform: rotate(1deg); background: #F4D8EF; }
-.social-cards li:nth-child(3) .social-card { transform: rotate(-0.8deg); background: #D8E8F4; }
-.social-card:hover { transform: rotate(0deg) translateY(-4px); }
-
-.social-name { font-size: 1.2rem; }
-.social-hook { font-size: 0.9rem; opacity: 0.8; }
-
 /* ===== MERCH ===== */
 .merch { background: var(--brick); color: var(--paper); }
 .merch-text { max-width: 48ch; margin: 0 0 var(--s4); }
@@ -351,44 +254,6 @@ h1.display {
 .footer a { color: var(--paper); margin: 0 var(--s2); }
 .footer-note { font-size: 0.72rem; opacity: 0.6; }
 
-/* ===== LIGHTBOX ===== */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  background: rgba(37, 34, 44, 0.92);
-  display: grid;
-  place-items: center;
-}
-.lightbox[hidden] { display: none; }
-
-.lb-img {
-  max-width: min(92vw, 1100px);
-  max-height: 88vh;
-  border: var(--border);
-  border-radius: var(--r-panel);
-  box-shadow: var(--shadow);
-  background: var(--paper);
-}
-
-.lightbox button {
-  position: fixed;
-  z-index: 51;
-  background: var(--paper);
-  color: var(--ink);
-  border: var(--border);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  font-size: 1.3rem;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-}
-.lb-close { top: var(--s3); right: var(--s3); }
-.lb-prev { left: var(--s3); top: 50%; transform: translateY(-50%); }
-.lb-next { right: var(--s3); top: 50%; transform: translateY(-50%); }
-
 /* ===== breakpoints ===== */
 @media (min-width: 768px) {
   .hero { grid-template-columns: 44% 1fr; align-items: center; padding: var(--s5); }
@@ -402,5 +267,5 @@ h1.display {
 /* ===== reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .progress-fill, .note, .sticker-btn, .social-card, .gallery button, .hero-socials a, .fold-arrow { transition: none; }
+  .progress-fill, .note, .sticker-btn, .hero-socials a { transition: none; }
 }
