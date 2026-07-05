@@ -428,6 +428,62 @@ h1.display {
 .merch .mascot { z-index: 1; }
 .merch-text { max-width: 48ch; margin: 0 0 var(--s4); }
 
+/* ===== PORTFOLIO: баннер + бесконечный конвейер артов ===== */
+.portfolio {
+  background: var(--paper) url("assets/portfolio-bg.jpg") right center / cover no-repeat;
+  background-image: image-set(url("assets/portfolio-bg.webp") type("image/webp"), url("assets/portfolio-bg.jpg") type("image/jpeg"));
+}
+.portfolio::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(255, 238, 243, 0.6);
+  pointer-events: none;
+}
+.portfolio > * { position: relative; z-index: 2; }
+
+.portfolio-sub {
+  margin: calc(-1 * var(--s3)) 0 var(--s4);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.conveyor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  margin: 0 calc(-1 * var(--s4)) var(--s5);
+  overflow: hidden;
+  /* мягкое затухание по краям */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.belt {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.belt img {
+  height: clamp(140px, 22vw, 210px);
+  width: auto;
+  margin-right: var(--s3); /* равномерный шаг = бесшовный цикл при -50% */
+  border: var(--border);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--ink);
+  flex: 0 0 auto;
+  background: var(--paper);
+}
+.belt-a { animation: belt-left 95s linear infinite; }
+.belt-b { animation: belt-right 120s linear infinite; }
+.conveyor:hover .belt { animation-play-state: paused; }
+
+@keyframes belt-left  { from { transform: translateX(0); }      to { transform: translateX(-50%); } }
+@keyframes belt-right { from { transform: translateX(-50%); }   to { transform: translateX(0); } }
+
 /* ===== FOOTER ===== */
 .footer {
   background: var(--ink);
@@ -526,6 +582,7 @@ h1.display {
     gap: var(--s5);
   }
   .panel { padding: var(--s6) var(--s5); }
+  .conveyor { margin-inline: calc(-1 * var(--s5)); }
 }
 
 @media (max-width: 767px) {
@@ -545,7 +602,7 @@ h1.display {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .progress-fill, .note, .sticker-btn, .hero-socials a, .sticker-btn::after, .panel { transition: none; }
-  .hero-art, .hero-copy > *, .ltr, .spark, .note, .goal-prize img, .pop, .mascot { animation: none; }
+  .hero-art, .hero-copy > *, .ltr, .spark, .note, .goal-prize img, .pop, .mascot, .belt { animation: none; }
   .pop { opacity: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }

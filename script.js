@@ -12,6 +12,7 @@ const LINKS = {
   tiktok:    "https://www.tiktok.com/@kukukarina",
   x:         "https://x.com/kukukarina",
   merch:     "https://www.inprnt.com/gallery/kuku_karina/", // INPRNT print shop
+  myart:     "https://www.instagram.com/kuku_karina/",      // «My Arts» — вся галерея (можно сменить на портфолио-сайт)
 };
 
 const UTM_SOURCE = "landing";
@@ -19,7 +20,7 @@ const UTM_MEDIUM = "cta";
 
 // Соцплатформы не терпят чужих query-параметров (Meta отвечает 429),
 // и UTM там всё равно бесполезны — метим только донаты и магазин.
-const NO_UTM = new Set(["instagram", "tiktok", "x"]);
+const NO_UTM = new Set(["instagram", "tiktok", "x", "myart"]);
 
 function isRealUrl(value) {
   return /^https?:\/\//i.test(value);
