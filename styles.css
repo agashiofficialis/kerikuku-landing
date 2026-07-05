@@ -31,14 +31,24 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--paper);
+  background-color: #2a2333;
   color: var(--ink);
   font-family: var(--font-text);
   font-size: 17px;
   line-height: 1.55;
-  /* лёгкая бумажная фактура */
-  background-image: radial-gradient(rgba(37, 34, 44, 0.04) 1px, transparent 1px);
-  background-size: 9px 9px;
+}
+
+/* затемнённый звёздный фон на весь сайт (фиксированный слой) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #2a2333;
+  background-image: url("assets/site-bg.jpg");
+  background-image: image-set(url("assets/site-bg.webp") type("image/webp"), url("assets/site-bg.jpg") type("image/jpeg"));
+  background-size: cover;
+  background-position: center;
 }
 
 .display { font-family: var(--font-display); font-weight: 900; letter-spacing: 0.01em; }
@@ -165,16 +175,15 @@ h2.display {
 }
 .mascot-goal {
   width: clamp(120px, 16vw, 190px);
-  right: -10px;
-  bottom: -22px;
+  right: 8px;
+  bottom: 6px;
   transform: rotate(-3deg);
   animation: mascot-bob 5.2s ease-in-out infinite 0.4s;
 }
 .mascot-merch {
   width: clamp(130px, 18vw, 210px);
-  left: 50%;
+  left: 66%;
   bottom: -30px;
-  margin-left: calc(-1 * clamp(130px, 18vw, 210px) / 2);
   animation: mascot-bob 4.8s ease-in-out infinite 0.8s;
 }
 
