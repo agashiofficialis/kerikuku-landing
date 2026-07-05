@@ -93,10 +93,9 @@ h2.display {
 .hero {
   background: var(--paper) url("assets/hero-bg.jpg") center / cover no-repeat;
   background-image: image-set(url("assets/hero-bg.webp") type("image/webp"), url("assets/hero-bg.jpg") type("image/jpeg"));
-  /* узкая панель: cover сам даёт горизонтальный запас — прижимаем влево, картинка уходит правее */
   background-size: cover;
-  background-position: 22% center;
-  color: var(--cream);
+  background-position: center;
+  color: var(--ink);
   display: grid;
   gap: var(--s4);
   padding: var(--s4);
@@ -145,7 +144,39 @@ h2.display {
 .hero-art::before { top: -16px; right: 20px; transform: rotate(7deg); }
 .hero-art::after { bottom: 96px; left: -38px; transform: rotate(105deg); }
 
+.hero-copy, .hero-art { position: relative; z-index: 2; }
 .hero-copy { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; }
+
+/* ===== маскоты — декоративные питомцы в углах панелей ===== */
+.panel .mascot {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
+}
+.mascot img { display: block; width: 100%; height: auto; }
+
+.mascot-hero {
+  width: clamp(120px, 17vw, 200px);
+  right: -14px;
+  bottom: -18px;
+  transform: rotate(4deg);
+  animation: mascot-bob 4.5s ease-in-out infinite;
+}
+.mascot-goal {
+  width: clamp(120px, 16vw, 190px);
+  right: -10px;
+  bottom: -22px;
+  transform: rotate(-3deg);
+  animation: mascot-bob 5.2s ease-in-out infinite 0.4s;
+}
+.mascot-merch {
+  width: clamp(130px, 18vw, 210px);
+  left: 50%;
+  bottom: -30px;
+  margin-left: calc(-1 * clamp(130px, 18vw, 210px) / 2);
+  animation: mascot-bob 4.8s ease-in-out infinite 0.8s;
+}
 
 /* каскадное появление текста hero */
 .hero-copy > * { animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -155,13 +186,14 @@ h2.display {
 .hero-copy > *:nth-child(4) { animation-delay: 0.6s; }
 .hero-copy > *:nth-child(5) { animation-delay: 0.75s; }
 
+/* «рукописный» лид — почерк художницы, чёрным поверх паутинки */
 .about-lead {
   margin: 0;
-  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-family: "Caveat", cursive;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
   font-weight: 700;
-  line-height: 1.35;
-  color: var(--cream);
-  text-shadow: 2px 2px 0 var(--ink);
+  line-height: 1.1;
+  color: var(--ink);
 }
 
 /* буквы заголовка (оборачиваются скриптом) */
@@ -184,22 +216,24 @@ h2.display {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  text-shadow: 1px 1px 0 rgba(37, 34, 44, 0.55);
+  opacity: 0.85;
 }
 
 h1.display {
   margin: 0;
   font-size: clamp(2.4rem, 7vw, 4.4rem);
   line-height: 1.05;
-  text-shadow: 4px 4px 0 var(--ink);
+  /* белый комикс-контур, чтобы чёрные буквы «выпрыгивали» с паутинного фона */
+  text-shadow: 3px 3px 0 var(--paper), -1px -1px 0 var(--paper), 1px -1px 0 var(--paper), -1px 1px 0 var(--paper);
 }
 
 .tagline {
   margin: 0;
-  font-size: 1.1rem;
-  max-width: 34ch;
-  /* тёмная подложка — кремовый текст читается поверх баннера */
-  text-shadow: 1px 1px 0 rgba(37, 34, 44, 0.7), 0 0 12px rgba(37, 34, 44, 0.35);
+  font-size: 1.05rem;
+  max-width: 40ch;
+  color: var(--ink);
+  /* лёгкая светлая подложка — чёрный текст чётко читается поверх паутинки */
+  text-shadow: 0 1px 5px rgba(241, 236, 223, 0.9), 0 0 2px rgba(241, 236, 223, 0.9);
 }
 
 .hero-socials { display: flex; gap: var(--s3); margin-top: var(--s2); }
@@ -217,35 +251,36 @@ h1.display {
 .hero-socials svg { width: 22px; height: 22px; fill: var(--paper); }
 
 /* ===== стикер-кнопка (signature-мотив записок) ===== */
+/* кнопка = ручная плашка художницы (btn-plate) с текстом поверх */
 .sticker-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1rem;
   text-decoration: none;
   color: #fff;
-  background: var(--neon);
-  border: var(--border);
-  border-radius: 2px; /* бумага почти не скругляется */
-  box-shadow: var(--shadow);
-  padding: var(--s3) var(--s4);
+  background: url("assets/btn-plate.png") center / 100% 100% no-repeat;
+  background-image: image-set(url("assets/btn-plate.webp") type("image/webp"), url("assets/btn-plate.png") type("image/png"));
+  border: none;
+  border-radius: 12px;
+  padding: var(--s3) var(--s5);
   transform: rotate(-2deg);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  text-shadow: 1px 1px 0 rgba(37, 34, 44, 0.6);
+  transition: transform 0.15s ease;
 }
-.sticker-btn:hover { transform: rotate(0deg) translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
-.sticker-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--ink); }
-.cta-merch { background: var(--brick); }
-.cta-bmc { background: #FFDD00; color: var(--ink); transform: rotate(1.5deg); }
-.cta-bmc:hover { transform: rotate(0deg) translate(-2px, -2px); }
+.sticker-btn:hover { transform: rotate(0deg) translateY(-3px) scale(1.03); }
+.sticker-btn:active { transform: translateY(2px) scale(0.99); }
+.cta-bmc { transform: rotate(1.5deg); }
+.cta-bmc:hover { transform: rotate(0deg) translateY(-3px) scale(1.03); }
 
-.donate-btns { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; }
+.donate-btns { display: flex; gap: var(--s4); flex-wrap: wrap; align-items: center; }
 
 .sticker-btn svg {
   width: 20px;
   height: 20px;
   fill: currentColor;
-  vertical-align: -4px;
-  margin-right: var(--s2);
 }
 
 /* ===== GOAL: баннер-арт фоном ===== */
@@ -259,10 +294,12 @@ h1.display {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: rgba(255, 238, 243, 0.68);
   pointer-events: none;
 }
-.goal > * { position: relative; }
+.goal > * { position: relative; z-index: 2; }
+.goal .mascot { z-index: 1; }
 
 .goal-sub {
   margin: calc(-1 * var(--s3)) 0 var(--s4);
@@ -274,19 +311,27 @@ h1.display {
 
 .goal-text { max-width: 52ch; font-size: 1.1rem; font-weight: 600; margin: 0 0 var(--s4); }
 
-.progress-wrap { margin-bottom: var(--s4); }
+.progress-wrap { position: relative; margin-bottom: var(--s4); margin-top: var(--s6); }
 
-/* полоса + приз-цель (планшет со стилусом) в одном ряду */
-.progress-row { display: flex; align-items: center; gap: var(--s3); }
-.progress-row .progress { flex: 1; min-width: 0; }
+.progress-row { position: relative; }
 
+/* приз-цель (планшет со стилусом) — крупный, слегка заходит на линию доната */
 .goal-prize {
-  position: relative;
-  flex: 0 0 clamp(84px, 12vw, 128px);
-  transform-origin: 72% 88%;
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-62%);
+  width: clamp(128px, 19vw, 196px);
+  z-index: 3;
+  pointer-events: none;
+}
+.goal-prize img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 68% 92%;
   animation: prize-tap 1.8s ease-in-out infinite;
 }
-.goal-prize img { display: block; width: 100%; height: auto; }
 
 /* звёздочки, которые «выбивает» стилус */
 .pop {
@@ -347,6 +392,9 @@ h1.display {
 
 .goal-updated { font-size: 0.75rem; opacity: 0.75; margin: var(--s3) 0 0; }
 
+/* место снизу-справа под маскота donate-блока */
+.goal { padding-bottom: var(--s7); }
+
 /* ===== MERCH: баннер-арт фоном ===== */
 .merch {
   background: var(--paper) url("assets/merch-bg.jpg") center / cover no-repeat;
@@ -357,10 +405,13 @@ h1.display {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: rgba(255, 238, 243, 0.68);
   pointer-events: none;
 }
-.merch > * { position: relative; }
+.merch > * { position: relative; z-index: 2; }
+.merch .mascot { z-index: 1; }
+.merch { padding-bottom: var(--s7); }
 .merch-text { max-width: 48ch; margin: 0 0 var(--s4); }
 
 /* ===== FOOTER ===== */
@@ -446,6 +497,12 @@ h1.display {
   100%     { opacity: 0; transform: translate(var(--dx, 8px), -22px) scale(1.15); }
 }
 
+/* маскоты мягко покачиваются */
+@keyframes mascot-bob {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -9px; }
+}
+
 /* ===== breakpoints ===== */
 @media (min-width: 768px) {
   .hero {
@@ -453,9 +510,6 @@ h1.display {
     align-items: center;
     padding: var(--s5);
     gap: var(--s5);
-    /* широкая панель: cover упирается в ширину — зум даёт запас, сдвигаем картинку правее */
-    background-size: 112% auto;
-    background-position: 0% 24%;
   }
   .panel { padding: var(--s6) var(--s5); }
 }
@@ -477,7 +531,7 @@ h1.display {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .progress-fill, .note, .sticker-btn, .hero-socials a, .sticker-btn::after, .panel { transition: none; }
-  .hero-art, .hero-copy > *, .ltr, .spark, .note, .goal-prize, .pop { animation: none; }
+  .hero-art, .hero-copy > *, .ltr, .spark, .note, .goal-prize img, .pop, .mascot { animation: none; }
   .pop { opacity: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
