@@ -442,8 +442,6 @@ h1.display {
   pointer-events: none;
 }
 .portfolio > * { position: relative; z-index: 2; }
-/* свёрнутый блок по высоте сопоставим с блоком мерча */
-.portfolio { min-height: 25rem; }
 
 .portfolio-sub {
   margin: calc(-1 * var(--s3)) 0 var(--s4);
@@ -620,6 +618,8 @@ h1.display {
   }
   .panel { padding: var(--s6) var(--s5); }
   .portfolio.open .conveyor { margin-inline: calc(-1 * var(--s5)); }
+  /* на десктопе свёрнутый блок по высоте сопоставим с блоком мерча */
+  .portfolio { min-height: 25rem; }
 }
 
 @media (max-width: 767px) {

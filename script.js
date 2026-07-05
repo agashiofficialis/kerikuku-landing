@@ -91,13 +91,19 @@ Promise.all([
     document.getElementById("progress-note").textContent = collected;
 
     const bar = document.getElementById("progress");
-    bar.setAttribute("aria-valuenow", Math.round(pct));
+    bar.setAttribute("aria-valuenow", Math.round(pct)); // aria/цифры — реальный %
 
     const fill = document.getElementById("progress-fill");
     const note = document.getElementById("progress-note");
+    // Минимально видимая заливка: если есть хоть какие-то сборы, показываем
+    // не меньше ~одной арт-плитки, чтобы было понятно, что полоса «наполняется» артом.
+    const MIN_FILL_PX = 64;
     const apply = () => {
-      fill.style.width = pct + "%";
-      note.style.left = pct + "%";
+      const barW = bar.clientWidth || 320;
+      const minPct = Math.min(100, (MIN_FILL_PX / barW) * 100);
+      const displayPct = goal.collected > 0 ? Math.max(pct, minPct) : 0;
+      fill.style.width = displayPct + "%";
+      note.style.left = displayPct + "%";
     };
 
     if (reducedMotion || !("IntersectionObserver" in window)) {
