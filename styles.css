@@ -166,27 +166,19 @@ h2.display {
 }
 .mascot img { display: block; width: 100%; height: auto; }
 
-.mascot-hero {
+/* все маскоты — в правом нижнем углу панели, крупные, как на hero */
+.mascot-hero,
+.mascot-goal,
+.mascot-merch,
+.mascot-arts {
   width: clamp(120px, 17vw, 200px);
   right: -14px;
   bottom: -18px;
-  transform: rotate(4deg);
-  animation: mascot-bob 4.5s ease-in-out infinite;
 }
-/* маскоты donate/merch — инлайн в ряд справа от кнопок, в полный рост */
-.donate-btns .mascot-goal,
-.merch-cta .mascot-merch {
-  position: static;
-  z-index: auto;
-  flex: 0 0 auto;
-  transform: rotate(-3deg);
-}
-.donate-btns .mascot-goal { height: clamp(104px, 13vw, 148px); animation: mascot-bob 5.2s ease-in-out infinite 0.4s; }
-.merch-cta .mascot-merch  { height: clamp(90px, 12vw, 128px); animation: mascot-bob 4.8s ease-in-out infinite 0.8s; }
-.donate-btns .mascot-goal img,
-.merch-cta .mascot-merch img { width: auto; height: 100%; }
-
-.merch-cta { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
+.mascot-hero  { transform: rotate(4deg);  animation: mascot-bob 4.5s ease-in-out infinite; }
+.mascot-goal  { transform: rotate(-3deg); animation: mascot-bob 5.2s ease-in-out infinite 0.4s; }
+.mascot-merch { transform: rotate(3deg);  animation: mascot-bob 4.8s ease-in-out infinite 0.8s; }
+.mascot-arts  { transform: rotate(4deg);  animation: mascot-thwip 3.2s ease-in-out infinite; }
 
 /* каскадное появление текста hero */
 .hero-copy > * { animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -455,16 +447,6 @@ h1.display {
 .arts-arrow { display: inline-block; transition: transform 0.3s ease; }
 .portfolio.open .arts-arrow { transform: rotate(180deg); }
 
-/* кнопка My Arts + маскот в ряд */
-.arts-cta { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
-.arts-cta .mascot-arts {
-  position: static;
-  z-index: auto;
-  flex: 0 0 auto;
-  height: clamp(96px, 13vw, 140px);
-  animation: mascot-thwip 3.2s ease-in-out infinite;
-}
-.arts-cta .mascot-arts img { width: auto; height: 100%; }
 
 /* конвейер свёрнут по умолчанию — блок компактный, как мерч */
 .conveyor {
@@ -600,12 +582,12 @@ h1.display {
   50%      { translate: 0 -9px; }
 }
 
-/* маскот My Arts — «выстреливает паутиной»: покачивание + периодический выпад */
+/* маскот My Arts — «выстреливает паутиной»: покачивание + периодический выпад (с базовым наклоном 4°) */
 @keyframes mascot-thwip {
-  0%, 60%, 100% { transform: translateY(0) rotate(0deg); }
-  68%           { transform: translateY(-6px) rotate(-5deg) scale(1.05); }
-  76%           { transform: translateY(0) rotate(2deg); }
-  84%           { transform: translateY(-2px) rotate(-1deg); }
+  0%, 60%, 100% { transform: translateY(0) rotate(4deg); }
+  68%           { transform: translateY(-6px) rotate(-2deg) scale(1.05); }
+  76%           { transform: translateY(0) rotate(7deg); }
+  84%           { transform: translateY(-2px) rotate(3deg); }
 }
 
 /* ===== breakpoints ===== */
